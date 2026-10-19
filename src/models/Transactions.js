@@ -2,15 +2,25 @@ const mongoose = require('mongoose');
 
 const transactionSchema = new mongoose.Schema(
   {
+    type: {
+      type: String,
+      enum: ['transfer', 'deposit', 'withdrawal'],
+      default: 'transfer',
+      required: true
+    }, 
     senderId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
-      required: true
+      required: function () {
+        return this.type === 'transfer' || this.type === 'withdrawal';
+      }
     },
     receiverId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
-      required: true
+      required: function () {
+        return this.type === 'transfer' || this.type === 'deposit';
+      }
     },
     amount: {
       type: Number,
@@ -27,25 +37,31 @@ const transactionSchema = new mongoose.Schema(
       enum: ['pending', 'completed', 'failed', 'reversed'],
       default: 'pending'
     },
+    externalDetails: {
+      bankAccountNumber: { type: String, trim: true },
+      ifscCode: { type: String, trim: true },
+      paymentGatewayTxnId: { type: String, trim: true }
+    }, 
     idempotencyKey: {
       type: String,
       required: true,
-      unique: true // Ek idempotency key sirf ek hi baar process ho sakti hai
+      unique: true // Ensures that the same transaction cannot be processed multiple times
     },
     description: {
       type: String,
       trim: true,
-      default: 'Peer-to-peer transfer'
+      default: 'Wallet transactions' // Default description for transactions
     }
   },
   {
-    timestamps: true
+    timestamps: true // Automatically adds createdAt and updatedAt fields to the schema
   }
 );
 
-// Compound Index: Ek user ke sent ya received transactions fast fetch karne ke liye
+// this is to optimize queries that filter transactions by senderId and sort them by creation date in descending order. This is useful for quickly retrieving a user's transaction history.
 transactionSchema.index({ senderId: 1, createdAt: -1 });
 transactionSchema.index({ receiverId: 1, createdAt: -1 });
+transactionSchema.index({ idempotencyKey: 1 });// This index ensures that the idempotencyKey is unique and allows for fast lookups to prevent duplicate transactions.
 
 const Transaction = mongoose.model('Transaction', transactionSchema);
 
