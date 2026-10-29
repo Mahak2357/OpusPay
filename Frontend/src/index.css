@@ -1,0 +1,50 @@
+﻿@import "tailwindcss";
+
+:root {
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  color-scheme: light;
+  --app-bg: #f6f8fb;
+  --surface: #ffffff;
+  --surface-alt: #f1f5f9;
+  --text: #102033;
+  --muted: #5f7187;
+  --border: #dce5ef;
+  --input: #ffffff;
+}
+
+:root[data-theme='dark'] {
+  color-scheme: dark;
+  --app-bg: #06080f;
+  --surface: #0b101d;
+  --surface-alt: #111827;
+  --text: #f8fafc;
+  --muted: #94a3b8;
+  --border: rgba(255, 255, 255, 0.1);
+  --input: #111827;
+}
+
+body { margin: 0; background: var(--app-bg); color: var(--text); overflow-x: hidden; }
+button, input, select { font: inherit; }
+.app-shell { background: var(--app-bg); color: var(--text); min-height: 100vh; }
+.theme-page { background: var(--app-bg); color: var(--text); }
+.theme-card { background: var(--surface); border-color: var(--border); color: var(--text); }
+.theme-subtle { background: var(--surface-alt); border-color: var(--border); }
+.theme-input { background: var(--input); border-color: var(--border); color: var(--text); }
+.theme-muted { color: var(--muted); }
+.theme-border { border-color: var(--border); }
+
+:root[data-theme='light'] .bg-\[\#06080F\],
+:root[data-theme='light'] .bg-\[\#0B101D\],
+:root[data-theme='light'] .bg-\[\#0B0F19\],
+:root[data-theme='light'] .bg-\[\#111827\] { background-color: var(--surface) !important; }
+:root[data-theme='light'] [class*='bg-[#06080F]'],
+:root[data-theme='light'] [class*='bg-[#0B101D]'],
+:root[data-theme='light'] [class*='bg-[#0B0F19]'],
+:root[data-theme='light'] [class*='bg-[#111827]'] { background-color: var(--surface) !important; }
+:root[data-theme='light'] [class*='border-white/'] { border-color: var(--border) !important; }
+:root[data-theme='light'] [class*='text-slate-400'],
+:root[data-theme='light'] [class*='text-slate-500'] { color: var(--muted) !important; }
+:root[data-theme='light'] [class*='text-white'],
+:root[data-theme='light'] [class*='text-slate-200'],
+:root[data-theme='light'] [class*='text-slate-300'] { color: var(--text); }
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; transition-duration: .01ms !important; } }
